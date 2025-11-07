@@ -1,0 +1,54 @@
+# Configuration for recommendation system
+
+# Model parameters
+model:
+  embedding_dim: 128
+  user_tower_hidden_dims: [256, 128]
+  journey_tower_hidden_dims: [256, 128]
+  dropout: 0.2
+  learning_rate: 0.001
+  batch_size: 512
+  num_epochs: 10
+
+# FAISS index parameters
+faiss:
+  index_type: "HNSW"  # Options: HNSW, IVF, IVF_HNSW
+  hnsw_m: 32
+  hnsw_ef_construction: 200
+  hnsw_ef_search: 50
+  nprobe: 10  # For IVF variants
+
+# Retrieval parameters
+retrieval:
+  candidate_count: 1000  # Top-N candidates from ANN
+  top_k: 10  # Final recommendations after re-ranking
+  enable_prefilter: true
+  prefilter_fields: ["region", "consent", "channel"]
+
+# Re-ranker parameters
+reranker:
+  n_estimators: 100
+  max_depth: 6
+  learning_rate: 0.1
+  features: ["vector_score", "propensity", "recency", "budget_fit", "channel_pref"]
+
+# Feature store
+feature_store:
+  rfm_segments: ["champion", "loyal", "at_risk", "lost"]
+  channel_preferences: ["email", "sms", "push", "in_app"]
+  route_affinity_window_days: 90
+
+# Serving
+serving:
+  latency_target_ms: 100
+  enable_suppression: true
+  enable_cadence: true
+  max_recommendations_per_user: 10
+
+# Data paths
+data:
+  customer_table: "data/customers.csv"
+  flight_order_table: "data/flight_orders.csv"
+  offer_catalog_table: "data/offer_catalog.csv"
+  interactions_table: "data/interactions.csv"
+
